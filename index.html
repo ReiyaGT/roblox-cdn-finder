@@ -1,384 +1,304 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roblox Avatar CDN Finder</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at top left, #0f172a, #020617);
-            min-height: 100vh;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roblox CDN Finder</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            cyber: {
+              bg: '#0a0f0d',
+              card: '#111a16',
+              border: '#1b2e26',
+              accent: '#10b981',
+              glow: '#059669',
+              dark: '#064e3b'
+            }
+          }
         }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-        }
-        .glow-effect {
-            box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.3);
-        }
-        .glow-effect:focus-within {
-            box-shadow: 0 0 30px -2px rgba(59, 130, 246, 0.5);
-        }
-        @keyframes spin-slow {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-            animation: spin-slow 3s linear infinite;
-        }
-    </style>
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #0a0f0d;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.12) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.08) 0%, transparent 50%);
+      min-height: 100vh;
+    }
+    .cyber-card {
+      background: rgba(17, 26, 22, 0.85);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(27, 46, 38, 0.8);
+      box-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.7), 0 0 20px -5px rgba(16, 185, 129, 0.15);
+    }
+    .cyber-input {
+      background: rgba(10, 15, 13, 0.8);
+      border: 1px solid #1b2e26;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .cyber-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.25);
+      outline: none;
+    }
+    .cyber-btn {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      transition: all 0.2s ease;
+    }
+    .cyber-btn:hover {
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+      transform: translateY(-1px);
+    }
+    .cyber-btn:active {
+      transform: translateY(0);
+    }
+  </style>
 </head>
-<text-slate-100 class="flex flex-col min-h-screen justify-between p-4 sm:p-6 md:p-12 relative overflow-hidden">
+<body class="font-sans text-gray-200 antialiased flex flex-col justify-between min-h-screen">
 
-    <!-- Background Decorative Gradients -->
-    <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-blue-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-indigo-600/20 rounded-full blur-[120px] pointer-events-none"></div>
-
-    <main class="max-w-xl w-full mx-auto my-auto z-10">
-        <!-- Header -->
-        <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl mb-4 text-blue-400">
-                <i data-lucide="box" class="w-8 h-8"></i>
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-2">
-                Roblox CDN Finder
-            </h1>
-            <p class="text-slate-400 text-sm sm:text-base">
-                Dapatkan link gambar langsung <code class="text-blue-400 font-mono text-xs bg-blue-950/60 px-1.5 py-0.5 rounded border border-blue-800/40">tr.rbxcdn.com</code> hanya dari username.
-            </p>
-        </div>
-
-        <!-- Main Card -->
-        <div class="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
-            
-            <!-- Search Form -->
-            <form id="search-form" onsubmit="event.preventDefault(); fetchUserAvatar();">
-                <div class="relative flex items-center glow-effect rounded-2xl transition-all duration-300">
-                    <div class="absolute left-4 text-slate-400">
-                        <i data-lucide="user" class="w-5 h-5"></i>
-                    </div>
-                    <input 
-                        type="text" 
-                        id="username-input" 
-                        placeholder="Masukkan Username Roblox..." 
-                        required
-                        class="w-full bg-slate-900/80 border border-slate-700/60 rounded-2xl py-4 pl-12 pr-32 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-blue-500 transition text-sm sm:text-base"
-                    />
-                    <button 
-                        type="submit" 
-                        id="search-btn"
-                        class="absolute right-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium px-5 py-2.5 rounded-xl transition-all duration-200 flex items-center gap-2 text-sm active:scale-95 shadow-lg shadow-blue-600/25"
-                    >
-                        <span>Cari</span>
-                        <i data-lucide="search" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </form>
-
-            <!-- Status & Step Pipeline -->
-            <div id="status-container" class="hidden space-y-3 bg-slate-950/40 border border-slate-800/80 rounded-2xl p-4 text-xs sm:text-sm">
-                <div class="flex items-center justify-between font-medium text-slate-300 mb-1">
-                    <span>Status Proses:</span>
-                    <span id="status-badge" class="px-2 py-0.5 rounded-full text-[11px] bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center gap-1">
-                        <i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Memproses...
-                    </span>
-                </div>
-                
-                <div id="step-1" class="flex items-center gap-2 text-slate-500 transition-colors">
-                    <i data-lucide="circle-dot" class="w-4 h-4 shrink-0"></i>
-                    <span>1. Menukar Username ke Roblox User ID</span>
-                </div>
-                <div id="step-2" class="flex items-center gap-2 text-slate-500 transition-colors">
-                    <i data-lucide="circle-dot" class="w-4 h-4 shrink-0"></i>
-                    <span>2. Mengambil hash URL CDN dari Thumbnails API</span>
-                </div>
-            </div>
-
-            <!-- Error Message Box -->
-            <div id="error-box" class="hidden bg-red-500/10 border border-red-500/30 rounded-2xl p-4 text-red-400 text-sm flex items-start gap-3">
-                <i data-lucide="alert-circle" class="w-5 h-5 shrink-0 mt-0.5"></i>
-                <div id="error-text">Terjadi kesalahan. Silakan coba lagi.</div>
-            </div>
-
-            <!-- Result Box -->
-            <div id="result-container" class="hidden space-y-6 pt-2">
-                
-                <!-- Avatar Type Selector -->
-                <div class="flex bg-slate-900/90 p-1 rounded-xl border border-slate-800">
-                    <button 
-                        type="button" 
-                        id="type-headshot" 
-                        onclick="switchAvatarType('headshot')"
-                        class="flex-1 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-white bg-blue-600 shadow"
-                    >
-                        Headshot (Foto Profil)
-                    </button>
-                    <button 
-                        type="button" 
-                        id="type-fullbody" 
-                        onclick="switchAvatarType('fullbody')"
-                        class="flex-1 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-slate-400 hover:text-slate-200"
-                    >
-                        Full Body (Seluruh Badan)
-                    </button>
-                </div>
-
-                <!-- Avatar Preview & User Info -->
-                <div class="flex flex-col sm:flex-row items-center gap-5 bg-slate-900/50 p-5 rounded-2xl border border-slate-800/80">
-                    <div class="relative group">
-                        <div class="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl blur opacity-30 group-hover:opacity-75 transition duration-300"></div>
-                        <img 
-                            id="avatar-image" 
-                            src="" 
-                            alt="Roblox Avatar" 
-                            class="relative w-32 h-32 sm:w-36 sm:h-36 object-contain rounded-2xl bg-slate-950/80 border border-slate-800"
-                        />
-                    </div>
-                    
-                    <div class="flex-1 text-center sm:text-left space-y-2">
-                        <div>
-                            <div id="display-username" class="text-xl font-bold text-white leading-tight">--</div>
-                            <div id="display-id" class="text-xs text-slate-400 mt-1 font-mono">User ID: --</div>
-                        </div>
-                        
-                        <div class="pt-2 flex flex-wrap gap-2 justify-center sm:justify-start">
-                            <a 
-                                id="download-btn" 
-                                href="#" 
-                                target="_blank"
-                                download="roblox-avatar.png"
-                                class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-medium transition"
-                            >
-                                <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                                <span>Buka Gambar</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Direct CDN URL Display -->
-                <div class="space-y-2">
-                    <label class="text-xs font-semibold uppercase tracking-wider text-slate-400 block">
-                        URL Gambar Asli (tr.rbxcdn.com)
-                    </label>
-                    <div class="flex gap-2">
-                        <input 
-                            type="text" 
-                            id="cdn-url-input" 
-                            readonly 
-                            class="w-full bg-slate-950/80 border border-slate-800 rounded-xl px-3 py-2.5 text-xs text-blue-300 font-mono focus:outline-none select-all"
-                        />
-                        <button 
-                            type="button" 
-                            onclick="copyToClipboard()"
-                            class="bg-slate-800 hover:bg-slate-700 text-white font-medium px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 shrink-0 text-xs active:scale-95 border border-slate-700/50"
-                        >
-                            <i data-lucide="copy" id="copy-icon" class="w-4 h-4"></i>
-                            <span id="copy-text">Salin</span>
-                        </button>
-                    </div>
-                </div>
-
-            </div>
-
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="text-center text-slate-600 text-xs py-4 z-10">
-        Ditenagai oleh Roblox API Publik &bull; ReiyaGT 2026
-    </footer>
-
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 bg-blue-600 text-white px-4 py-2.5 rounded-xl shadow-xl text-xs font-medium flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-        <i data-lucide="check-circle" class="w-4 h-4"></i>
-        <span>URL Berhasil Disalin!</span>
+  <div class="container mx-auto px-4 py-12 max-w-2xl flex-grow flex flex-col justify-center items-center">
+    
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-cyber-card border border-cyber-border mb-4 text-cyber-accent shadow-lg shadow-cyber-accent/10">
+        <i class="fa-solid me-0 fa-cube text-3xl"></i>
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-white mb-2">
+        Roblox <span class="text-cyber-accent">CDN</span> Finder
+      </h1>
+      <p class="text-gray-400 text-sm sm:text-base">
+        Dapatkan URL gambar asli <code class="font-mono text-cyber-accent bg-cyber-dark/40 px-2 py-0.5 rounded border border-cyber-accent/20">tr.rbxcdn.com</code> langsung dari username.
+      </p>
     </div>
 
-    <script>
-        // Inisialisasi ikon Lucide
-        lucide.createIcons();
+    <!-- Main Card -->
+    <div class="w-full cyber-card rounded-2xl p-6 sm:p-8">
+      
+      <!-- Input & Controls -->
+      <form id="searchForm" onsubmit="event.preventDefault(); fetchRobloxCDN();" class="space-y-5">
+        
+        <!-- Toggle Type -->
+        <div class="flex justify-center p-1 bg-black/40 rounded-xl border border-cyber-border max-w-xs mx-auto mb-2">
+          <button type="button" id="btnHeadshot" onclick="setType('headshot')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all duration-200 bg-cyber-accent text-black shadow">
+            <i class="fa-solid fa-user-gear mr-1"></i> Headshot
+          </button>
+          <button type="button" id="btnFull" onclick="setType('full')" class="flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all duration-200">
+            <i class="fa-solid fa-person mr-1"></i> Full Body
+          </button>
+        </div>
 
-        let currentUserId = null;
-        let currentUsername = "";
-        let activeAvatarType = 'headshot'; // 'headshot' atau 'fullbody'
+        <!-- Username Input Group -->
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-500">
+            <i class="fa-solid fa-at"></i>
+          </div>
+          <input 
+            type="text" 
+            id="usernameInput" 
+            placeholder="Masukkan username Roblox..." 
+            class="w-full cyber-input text-white pl-11 pr-28 py-3.5 rounded-xl font-medium placeholder-gray-500 text-sm sm:text-base"
+            required
+            autocomplete="off"
+          >
+          <button 
+            type="submit" 
+            id="submitBtn"
+            class="absolute right-1.5 top-1.5 bottom-1.5 cyber-btn text-black font-bold px-5 rounded-lg text-sm flex items-center justify-center gap-2"
+          >
+            <span>Cari</span>
+            <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          </button>
+        </div>
+      </form>
 
-        // Daftar Fallback Proxy untuk Menghindari Keterbatasan CORS Roblox API
-        const CORS_PROXIES = [
-            (url) => url, // Direct Call terlebih dahulu
-            (url) => `https://corsproxy.io/?${encodeURIComponent(url)}`,
-            (url) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`
-        ];
+      <!-- Status Indicator -->
+      <div id="statusArea" class="hidden mt-6 p-4 rounded-xl text-sm font-medium border flex items-center gap-3">
+        <i id="statusIcon" class="text-base"></i>
+        <span id="statusMessage"></span>
+      </div>
 
-        // Helper Fetcher dengan Otomatisasi Proxy Fallback
-        async function fetchWithFallback(url, options = {}) {
-            let lastError = null;
-            for (const proxyGenerator of CORS_PROXIES) {
-                try {
-                    const proxiedUrl = proxyGenerator(url);
-                    const response = await fetch(proxiedUrl, options);
-                    if (response.ok) {
-                        return await response.json();
-                    }
-                } catch (err) {
-                    lastError = err;
-                }
-            }
-            throw lastError || new Error("Gagal terhubung ke API Roblox.");
+      <!-- Result Card -->
+      <div id="resultArea" class="hidden mt-6 pt-6 border-t border-cyber-border">
+        
+        <div class="flex flex-col sm:flex-row items-center gap-6">
+          <!-- Avatar Preview -->
+          <div class="relative group">
+            <div class="w-36 h-36 rounded-2xl bg-black/50 border border-cyber-border flex items-center justify-center overflow-hidden p-2 shadow-inner">
+              <img id="avatarImg" src="" alt="Avatar Roblox" class="w-full h-full object-contain filter drop-shadow-md transition-transform duration-300 group-hover:scale-105">
+            </div>
+            <span class="absolute -bottom-2 -right-2 bg-cyber-accent text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
+              PNG 420px
+            </span>
+          </div>
+
+          <!-- User Info & Link Box -->
+          <div class="flex-1 w-full space-y-3">
+            <div>
+              <h2 id="displayNameText" class="text-lg font-bold text-white flex items-center gap-2">
+                -
+              </h2>
+              <p id="usernameText" class="text-xs text-cyber-accent font-mono">@-</p>
+              <p id="userIdText" class="text-[11px] text-gray-500 font-mono mt-0.5">ID: -</p>
+            </div>
+
+            <!-- CDN URL Output -->
+            <div class="space-y-1.5">
+              <label class="text-[11px] font-semibold text-gray-400 uppercase tracking-wider">URL CDN Gambar Direct:</label>
+              <div class="flex items-center gap-2">
+                <input 
+                  type="text" 
+                  id="cdnUrlInput" 
+                  readonly 
+                  class="w-full bg-black/60 border border-cyber-border text-gray-300 font-mono text-xs px-3 py-2 rounded-lg focus:outline-none select-all"
+                >
+                <button 
+                  onclick="copyToClipboard()" 
+                  id="copyBtn"
+                  title="Salin URL"
+                  class="bg-cyber-card hover:bg-cyber-border text-cyber-accent border border-cyber-border p-2 rounded-lg text-xs font-semibold transition-all shrink-0 flex items-center justify-center w-9 h-9"
+                >
+                  <i class="fa-regular fa-copy"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex gap-2 pt-1">
+              <a 
+                id="openBtn" 
+                href="#" 
+                target="_blank" 
+                class="flex-1 bg-cyber-card hover:bg-cyber-border text-gray-200 border border-cyber-border text-xs py-2 px-3 rounded-lg font-semibold text-center transition-all flex items-center justify-center gap-1.5"
+              >
+                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i> Buka Tab Baru
+              </a>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-xs text-gray-600 border-t border-cyber-border/40">
+    <p>Ditenagai oleh Vercel Serverless & Roblox API Publik</p>
+      <p>ReiyaGT 2026</p>
+  </footer>
+
+  <script>
+    let currentType = 'headshot';
+
+    function setType(type) {
+      currentType = type;
+      const btnHead = document.getElementById('btnHeadshot');
+      const btnFull = document.getElementById('btnFull');
+
+      if (type === 'headshot') {
+        btnHead.className = "flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all duration-200 bg-cyber-accent text-black shadow";
+        btnFull.className = "flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all duration-200";
+      } else {
+        btnFull.className = "flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all duration-200 bg-cyber-accent text-black shadow";
+        btnHead.className = "flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold text-gray-400 hover:text-white transition-all duration-200";
+      }
+
+      // Jika input tidak kosong, jalankan pencarian ulang
+      if(document.getElementById('usernameInput').value.trim() !== '') {
+        fetchRobloxCDN();
+      }
+    }
+
+    function showStatus(message, isError = false, isLoading = false) {
+      const statusArea = document.getElementById('statusArea');
+      const statusIcon = document.getElementById('statusIcon');
+      const statusMessage = document.getElementById('statusMessage');
+
+      statusArea.classList.remove('hidden', 'bg-red-950/40', 'border-red-800/50', 'text-red-300', 'bg-cyber-dark/30', 'border-cyber-accent/40', 'text-cyber-accent');
+
+      if (isError) {
+        statusArea.classList.add('bg-red-950/40', 'border-red-800/50', 'text-red-300');
+        statusIcon.className = "fa-solid fa-triangle-exclamation";
+      } else if (isLoading) {
+        statusArea.classList.add('bg-cyber-dark/30', 'border-cyber-accent/40', 'text-cyber-accent');
+        statusIcon.className = "fa-solid fa-spinner fa-spin";
+      }
+
+      statusMessage.textContent = message;
+    }
+
+    function hideStatus() {
+      document.getElementById('statusArea').classList.add('hidden');
+    }
+
+    async function fetchRobloxCDN() {
+      const username = document.getElementById('usernameInput').value.trim();
+      const submitBtn = document.getElementById('submitBtn');
+      const resultArea = document.getElementById('resultArea');
+
+      if (!username) return;
+
+      // Reset & UI Loading State
+      resultArea.classList.add('hidden');
+      submitBtn.disabled = true;
+      submitBtn.classList.add('opacity-75');
+      showStatus(`Mencari data untuk @${username}...`, false, true);
+
+      try {
+        // Memanggil Serverless Function Vercel
+        const response = await fetch(`/api/roblox?username=${encodeURIComponent(username)}&type=${currentType}`);
+        const data = await response.json();
+
+        if (!response.ok || data.error) {
+          throw new Error(data.error || 'Gagal mengambil data dari server.');
         }
 
-        async function fetchUserAvatar() {
-            const usernameInput = document.getElementById('username-input').value.trim();
-            if (!usernameInput) return;
+        // Tampilkan Hasil
+        document.getElementById('displayNameText').textContent = data.displayName;
+        document.getElementById('usernameText').textContent = `@${data.name}`;
+        document.getElementById('userIdText').textContent = `User ID: ${data.userId}`;
+        document.getElementById('cdnUrlInput').value = data.imageUrl;
+        document.getElementById('avatarImg').src = data.imageUrl;
+        document.getElementById('openBtn').href = data.imageUrl;
 
-            // Reset UI State
-            hideError();
-            showStatus();
-            document.getElementById('result-container').classList.add('hidden');
-            
-            updateStep(1, 'loading', 'Mencari User ID untuk username...');
-            updateStep(2, 'waiting', 'Mengambil CDN URL...');
+        hideStatus();
+        resultArea.classList.remove('hidden');
 
-            try {
-                // Step 1: Dapatkan User ID dari Username
-                const userPayload = { usernames: [usernameInput], excludeBannedUsers: true };
-                const userData = await fetchWithFallback('https://users.roblox.com/v1/usernames/users', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userPayload)
-                });
+      } catch (err) {
+        showStatus(err.message, true, false);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-75');
+      }
+    }
 
-                if (!userData || !userData.data || userData.data.length === 0) {
-                    throw new Error(`Username "${usernameInput}" tidak ditemukan di Roblox.`);
-                }
+    function copyToClipboard() {
+      const copyInput = document.getElementById('cdnUrlInput');
+      const copyBtn = document.getElementById('copyBtn');
 
-                currentUserId = userData.data[0].id;
-                currentUsername = userData.data[0].name;
+      copyInput.select();
+      navigator.clipboard.writeText(copyInput.value);
 
-                updateStep(1, 'success', `User ID Ditemukan: ${currentUserId}`);
-                updateStep(2, 'loading', 'Mengambil URL CDN Avatar...');
+      copyBtn.innerHTML = `<i class="fa-solid fa-check text-cyber-accent"></i>`;
+      setTimeout(() => {
+        copyBtn.innerHTML = `<i class="fa-regular fa-copy"></i>`;
+      }, 2000);
+    }
+  </script>
 
-                // Step 2: Ambil Avatar CDN URL
-                await loadAvatarUrl();
-
-                updateStep(2, 'success', 'Selesai!');
-                
-                // Tampilkan Hasil
-                document.getElementById('display-username').innerText = currentUsername;
-                document.getElementById('display-id').innerText = `User ID: ${currentUserId}`;
-                document.getElementById('result-container').classList.remove('hidden');
-
-            } catch (err) {
-                showError(err.message || 'Terjadi kesalahan saat memproses permintaan.');
-            } finally {
-                setTimeout(() => {
-                    document.getElementById('status-container').classList.add('hidden');
-                }, 1000);
-            }
-        }
-
-        async function loadAvatarUrl() {
-            if (!currentUserId) return;
-
-            const endpoint = activeAvatarType === 'headshot' 
-                ? `https://thumbnails.roblox.com/v1/users/avatar-headshot?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`
-                : `https://thumbnails.roblox.com/v1/users/avatar?userIds=${currentUserId}&size=420x420&format=Png&isCircular=false`;
-
-            const thumbData = await fetchWithFallback(endpoint);
-
-            if (thumbData && thumbData.data && thumbData.data.length > 0) {
-                const cdnUrl = thumbData.data[0].imageUrl;
-                document.getElementById('avatar-image').src = cdnUrl;
-                document.getElementById('cdn-url-input').value = cdnUrl;
-                document.getElementById('download-btn').href = cdnUrl;
-            } else {
-                throw new Error("Gagal mengambil gambar avatar CDN.");
-            }
-        }
-
-        function switchAvatarType(type) {
-            if (activeAvatarType === type) return;
-            activeAvatarType = type;
-
-            const btnHeadshot = document.getElementById('type-headshot');
-            const btnFullbody = document.getElementById('type-fullbody');
-
-            if (type === 'headshot') {
-                btnHeadshot.className = "flex-1 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-white bg-blue-600 shadow";
-                btnFullbody.className = "flex-1 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-slate-400 hover:text-slate-200";
-            } else {
-                btnFullbody.className = "flex-1 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-white bg-blue-600 shadow";
-                btnHeadshot.className = "flex-1 py-2 text-xs sm:text-sm font-medium rounded-lg transition-all text-slate-400 hover:text-slate-200";
-            }
-
-            if (currentUserId) {
-                loadAvatarUrl();
-            }
-        }
-
-        function updateStep(stepNum, status, message) {
-            const el = document.getElementById(`step-${stepNum}`);
-            if (status === 'loading') {
-                el.className = "flex items-center gap-2 text-blue-400 font-medium";
-                el.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin shrink-0"></i> <span>${message}</span>`;
-            } else if (status === 'success') {
-                el.className = "flex items-center gap-2 text-emerald-400";
-                el.innerHTML = `<i data-lucide="check-circle-2" class="w-4 h-4 shrink-0"></i> <span>${message}</span>`;
-            } else if (status === 'waiting') {
-                el.className = "flex items-center gap-2 text-slate-500";
-                el.innerHTML = `<i data-lucide="circle-dot" class="w-4 h-4 shrink-0"></i> <span>${message}</span>`;
-            }
-            lucide.createIcons();
-        }
-
-        function showStatus() {
-            document.getElementById('status-container').classList.remove('hidden');
-        }
-
-        function showError(msg) {
-            const errBox = document.getElementById('error-box');
-            document.getElementById('error-text').innerText = msg;
-            errBox.classList.remove('hidden');
-            document.getElementById('status-container').classList.add('hidden');
-        }
-
-        function hideError() {
-            document.getElementById('error-box').classList.add('hidden');
-        }
-
-        function copyToClipboard() {
-            const urlInput = document.getElementById('cdn-url-input');
-            urlInput.select();
-            document.execCommand('copy');
-
-            // Feedback Visual
-            const copyText = document.getElementById('copy-text');
-            copyText.innerText = "Tersalin!";
-            
-            showToast();
-
-            setTimeout(() => {
-                copyText.innerText = "Salin";
-            }, 2000);
-        }
-
-        function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 2500);
-        }
-    </script>
 </body>
 </html>
